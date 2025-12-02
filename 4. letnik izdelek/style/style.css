@@ -1,0 +1,147 @@
+/* -------------  Osnovne nastavitve  ------------- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Share Tech Mono', monospace;
+  background-color: #0a0e14;
+  color: #d1dbe3;
+  line-height: 1.6;
+}
+
+/* -------------  Glava in navigacija  ------------- */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 40px;
+  background-color: #0f141a;
+  border-bottom: 1px solid #1f2933;
+}
+
+.logo {
+  color: #33ff99;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+nav a {
+  color: #9ae6f5;
+  text-decoration: none;
+  margin-left: 20px;
+  transition: color 0.2s;
+}
+
+nav a:hover,
+nav .active {
+  color: #33ff99;
+}
+
+/* -------------  Hero sekcija  ------------- */
+.hero {
+  background: radial-gradient(ellipse at center, #111820 0%, #0a0e14 70%);
+  text-align: center;
+  padding: 80px 20px;
+  border-bottom: 1px solid #1b2430;
+}
+
+.hero-text h1 {
+  color: #33ff99;
+  font-size: 2.5em;
+  margin-bottom: 15px;
+}
+
+.subtitle {
+  color: #9ae6f5;
+  font-size: 1.1em;
+  margin-bottom: 30px;
+}
+
+.button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #33ff99;
+  color: #0a0e14;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.button:hover {
+  background-color: #27d17f;
+}
+
+/* -------------  Intro sekcija  ------------- */
+.intro {
+  max-width: 800px;
+  padding: 40px 20px;
+  margin: auto;
+}
+
+.intro h2 {
+  color: #9ae6f5;
+  margin-bottom: 10px;
+}
+
+.intro p {
+  margin-bottom: 16px;
+}
+
+/* -------------  Footer  ------------- */
+footer {
+  text-align: center;
+  font-size: 0.9em;
+  color: #8b949e;
+  padding: 20px;
+  border-top: 1px solid #1f2933;
+}
+
+
+/* -----------  Orodja (grid‑stil)  ----------- */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.tool-card {
+  border: 1px solid #1f2933;
+  padding: 20px;
+  border-radius: 6px;
+  background-color: #111820;
+  color: #d1dbe3;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.tool-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 10px rgba(51, 255, 153, 0.3);
+}
+
+.tool-card h3 {
+  color: #33ff99;
+  margin-bottom: 8px;
+}
+
+/*-----------nmap--------------------*/
+pre {
+  background-color: #0f141a;
+  border: 1px solid #1f2933;
+  border-radius: 4px;
+  padding: 10px;
+  overflow-x: auto;
+  color: #33ff99;
+  font-size: 0.9em;
+}
+
+ul {
+  margin: 10px 20px;
+  list-style-type: square;
+}
+
+.note {
+  font-size: 0.9em;
+  color: #9ae6f5;
+  margin-bottom: 20px;
+}
