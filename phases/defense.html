@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Faza 4 – Zaščita in zaključek | Lazy Admin Project</title>
+  <link rel="stylesheet" href="../style/style.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">⚡ HTB Project – Lazy Admin</div>
+    <nav>
+      <a href="../index.html">Domov</a>
+      <a href="reconnaissance.html">Faze napada</a>
+      <a href="../tools/index.html">Orodja</a>
+      <a href="../report.html">Attack Report</a>
+    </nav>
+  </header>
+    <div class="progress-container">
+        <div class="progress-bar" id="phase-progress"></div>
+    </div>
+
+  <section class="intro">
+    <h1>Faza 4 – Zaščita in zaključek (Defense & Remediation)</h1>
+
+    <p>
+      V zadnji fazi se poglobiva v razmislek, kako bi se podobnim ranljivostim, kot so bile ugotovljene pri tarči <strong>Lazy Admin</strong>,
+      izognili v resničnem okolju. To je faza popravljanja in preprečevanja – ključna za vsako varnostno analizo.
+    </p>
+
+    <h2>1. Pregled ugotovitev</h2>
+    <ul>
+      <li>Neposodobljen spletni strežnik ali CMS</li>
+      <li>Slabe privzete geslene kombinacije</li>
+      <li>Napačno nastavljene pravice datotek</li>
+      <li>Pomanjkanje nadzora nad konfiguracijami</li>
+    </ul>
+
+    <h2>2. Priporočeni ukrepi za popravke</h2>
+    <div class="screenshot-box">
+      <h3>Osnovni varnostni ukrepi</h3>
+      <p>
+        Tukaj boš pozneje dodajal konkretne predloge in morda posnetke config datotek ali politike gesel, npr.:
+      </p>
+      <ul>
+        <li>Redno posodabljanje in patch management</li>
+        <li>Uporaba močnejših gesel in dvoslojne avtentikacije</li>
+        <li>Omejitev dostopa do administrativnih vmesnikov</li>
+        <li>Pravilno nastavljanje lastništva in pravic datotek</li>
+        <li>Implementacija varnostnih zapisnikov (logiranja)</li>
+      </ul>
+    </div>
+
+    <div class="screenshot-box">
+      <h3>Organizacijski ukrepi in politike</h3>
+      <p>
+        Poleg tehničnih popravkov je v poročilu pomembno poudariti tudi organizacijske ukrepe:
+      </p>
+      <ul>
+        <li>Redni varnostni pregledi in monitoring</li>
+        <li>Usposabljanje zaposlenih o prepoznavanju phishing napadov</li>
+        <li>Uvajanje standardov informacijske varnosti (ISO/IEC 27001)</li>
+      </ul>
+    </div>
+
+    <h2>3. Zaključek projekta</h2>
+    <p>
+      Projekt <strong>Lazy Admin Analysis</strong> prikazuje celoten potek etičnega testiranja sistema – od zbiranja informacij do predlaganih popravkov.
+      Ob tem sem se naučil prepoznati, kako tudi enostavne napake v konfiguraciji vodijo v resne posledice in kako pomembno je redno vzdrževanje sistemov.
+    </p>
+
+    <div class="nav-buttons">
+      <a href="privilege.html" class="button">⬅ Nazaj – Dvig pravic</a>
+      <a href="../index.html" class="button">🏠 Domov</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2024 [Tvoje ime] | HTB – Lazy Admin Project | Faza 4 – Zaščita in zaključek</p>
+  </footer>
+
+    <script>
+        const progressBar = document.getElementById('phase-progress');
+        let target = 0;
+
+        if (location.href.includes('reconnaissance')) target = 25;
+        if (location.href.includes('exploitation'))   target = 50;
+        if (location.href.includes('privilege'))      target = 75;
+        if (location.href.includes('defense'))        target = 100;
+
+        let progress = 0;
+        const speed = 10;          // hitrost polnjenja (manj → počasneje)
+        const step  = target / speed;
+
+        const fill = setInterval(() => {
+            progress += step;
+            if (progress >= target) {
+            progress = target;
+            clearInterval(fill);
+            }
+            progressBar.style.width = progress + '%';
+        }, 50);                    // časovni interval animacije (v ms)
+    </script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Faza 3 – Dvig pravic | Lazy Admin Project</title>
+  <link rel="stylesheet" href="../style/style.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">⚡ HTB Project – Lazy Admin</div>
+    <nav>
+      <a href="../index.html">Domov</a>
+      <a href="reconnaissance.html">Faze napada</a>
+      <a href="../tools/index.html">Orodja</a>
+      <a href="../report.html">Attack Report</a>
+    </nav>
+  </header>
+    <div class="progress-container">
+        <div class="progress-bar" id="phase-progress"></div>
+    </div>
+
+  <section class="intro">
+    <h1>Faza 3 – Dvig pravic (Privilege Escalation)</h1>
+
+    <p>
+      V tej fazi preizkusimo, ali lahko uporabnik, ki je dobil osnovni dostop,
+      pridobi <strong>skrbniške ali root pravice</strong>.  
+      Analiza v okviru Lazy Admin pokaže, kako napačne konfiguracije ali slabi skripti v sistemu 
+      omogočajo izvajanje dejanj, ki niso namenjena navadnim uporabnikom.
+    </p>
+
+    <h2>Opis cilja</h2>
+    <p>
+      Dvig pravic (Privilege Escalation) je namenjen preverjanju, ali so notranji mehanizmi operacijskega sistema varno nastavljeni. 
+      Cilj je pokazati, kako lahko nepravilne pravice datotek ali storitve vodijo do prevzema nadzora nad celotnim sistemom.
+    </p>
+
+    <h2>Orodja in pristopi</h2>
+    <ul>
+      <li>Lastnoročno preverjanje pravic (`sudo -l`, `id`, `whoami`).</li>
+      <li>Pregled lokalnih skript in konfiguracijskih datotek za gesla ali token‑e.</li>
+      <li>Uporaba namenjenih skript za pregled pravic (LinPEAS, pspy ipd.).</li>
+    </ul>
+
+    <h2>Postopek analize</h2>
+    <div class="screenshot-box">
+      <h3>Pregled pravic uporabnika</h3>
+      <p>
+        Tukaj boš pozneje dodal screenshot ukaza znotraj sistema, kjer se vidi trenutne pravice uporabnika.  
+        Nato boš opisno pojasnil, kaj pomeni izpis (na primer, da ima uporabnik možnost zaganjati skripte s sudo).
+      </p>
+      <img src="../assets/screenshots/privilege_user.png" alt="pregled pravic" />
+      <p class="caption">Slika 1 – Rezultat ukaza <code>sudo -l</code> ali <code>id</code>.</p>
+    </div>
+
+    <div class="screenshot-box">
+      <h3>Analiza skripte v sistemu</h3>
+      <p>
+        Na sliki boš pozneje pokazal skripto ali storitev, ki se izvaja z višjimi pravicami in ni ustrezno zavarovana.
+      </p>
+      <img src="../assets/screenshots/privilege_script.png" alt="ranljiva skripta" />
+      <p class="caption">Slika 2 – Ponazoritev nevarne skripte v sistemu Lazy Admin.</p>
+    </div>
+
+    <h2>Povzetek faze</h2>
+    <p>
+      V tej fazi boš pozneje povzel, katere pravice so bile napačno dodeljene in kako bi to v realnem okolju popravili.  
+      Primere poveži z mehanizmi upravljanja uporabnikov ter konceptom "least privilege".
+    </p>
+
+    <div class="nav-buttons">
+      <a href="exploitation.html" class="button">⬅ Nazaj – Izkoriščanje</a>
+      <a href="defense.html" class="button">➡ Naprej – Zaščita in zaključek</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2024 [Tvoje ime] | HTB – Lazy Admin Project | Faza 3 – Dvig pravic</p>
+  </footer>
+
+    <script>
+        const progressBar = document.getElementById('phase-progress');
+        let target = 0;
+
+        if (location.href.includes('reconnaissance')) target = 25;
+        if (location.href.includes('exploitation'))   target = 50;
+        if (location.href.includes('privilege'))      target = 75;
+        if (location.href.includes('defense'))        target = 100;
+
+        let progress = 0;
+        const speed = 10;          // hitrost polnjenja (manj → počasneje)
+        const step  = target / speed;
+
+        const fill = setInterval(() => {
+            progress += step;
+            if (progress >= target) {
+            progress = target;
+            clearInterval(fill);
+            }
+            progressBar.style.width = progress + '%';
+        }, 50);                    // časovni interval animacije (v ms)
+    </script>
+</body>
+</html>
