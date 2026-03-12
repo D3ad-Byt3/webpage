@@ -1,4 +1,4 @@
-/* -------------  Osnovne nastavitve  ------------- */
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -8,7 +8,7 @@ body {
   line-height: 1.6;
 }
 
-/* -------------  Glava in navigacija  ------------- */
+
 header {
   display: flex;
   justify-content: space-between;
@@ -36,7 +36,7 @@ nav .active {
   color: #33ff99;
 }
 
-/* -------------  Hero sekcija  ------------- */
+
 .hero {
   background: radial-gradient(ellipse at center, #111820 0%, #0a0e14 70%);
   text-align: center;
@@ -70,7 +70,7 @@ nav .active {
   background-color: #27d17f;
 }
 
-/* -------------  Intro sekcija  ------------- */
+
 .intro {
   max-width: 800px;
   padding: 40px 20px;
@@ -86,7 +86,7 @@ nav .active {
   margin-bottom: 16px;
 }
 
-/* -------------  Footer  ------------- */
+
 footer {
   text-align: center;
   font-size: 0.9em;
@@ -96,7 +96,7 @@ footer {
 }
 
 
-/* -----------  Orodja (grid‑stil)  ----------- */
+
 .tools-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -124,7 +124,7 @@ footer {
   margin-bottom: 8px;
 }
 
-/*-----------nmap--------------------*/
+
 pre {
   background-color: #0f141a;
   border: 1px solid #1f2933;
@@ -144,4 +144,44 @@ ul {
   font-size: 0.9em;
   color: #9ae6f5;
   margin-bottom: 20px;
+}
+
+/*resoblabla*/
+
+.nav-buttons {
+  text-align: right;
+  margin-top: 40px;
+}
+
+.nav-buttons .button {
+  background-color: #33ff99;
+  color: #0a0e14;
+  font-weight: bold;
+}
+
+/* -------  Progress bar  ------- */
+.progress-container {
+  width: 100%;
+  background-color: #10161e;
+  height: 8px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  border-bottom: 1px solid #1f2933;
+  border-radius: 2px;
+}
+
+.progress-bar {
+  height: 8px;
+  background: linear-gradient(90deg, #0aff9d, #2df7c2, #33ff99);
+  width: 0%;
+  transition: width 1s ease-in-out;
+  background-size: 200% 100%;
+  animation: glow 3s linear infinite;
+  box-shadow: 0 0 5px rgba(51, 255, 153, 0.5);
+}
+
+/* premikanje svetlečega odtenka po traku */
+@keyframes glow {
+  0%   { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
 }
