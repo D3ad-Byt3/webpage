@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gobuster | HTB‑Project</title>
+  <link rel="stylesheet" href="../style/style.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">⚡ HTB‑Project</div>
+    <nav>
+      <a href="../index.html">Domov</a>
+      <a href="../phases/reconnaissance.html">Faze&nbsp;napada</a>
+      <a href="index.html" class="active">Orodja</a>
+      <a href="../report.html">Attack&nbsp;Report</a>
+    </nav>
+  </header>
+
+  <section class="intro">
+    <h2>Gobuster – iskalnik skritih poti</h2>
+    <p>
+      <strong>Gobuster</strong> je orodje za odkrivanje skritih direktorijev in datotek
+      na spletnih strežnikih. Deluje s pomočjo napadov *brute‑force*, pri katerih
+      preverja tisoče kombinacij imen in išče takšne, ki dejansko obstajajo.
+    </p>
+
+    <h3>Glavne funkcije</h3>
+    <ul>
+      <li>Iskanje neobjavljenih direktorijev in datotek (ang. directory brute forcing)</li>
+      <li>Podpora za iskanje poddomenskih imen (DNS‑mode)</li>
+      <li>Možnost uporabe lastnih seznamov besed (wordlist)</li>
+      <li>Hitro delovanje z uporabo več niti hkrati</li>
+    </ul>
+
+    <h3>Primer ukazov</h3>
+    <pre><code>
+# osnovno iskanje direktorijev na spletnem strežniku
+gobuster dir -u http://10.10.10.10 -w /usr/share/wordlists/dirb/common.txt
+
+# iskanje poddomen (dns način)
+gobuster dns -d target.local -w /usr/share/wordlists/dns/subdomains-top1million.txt
+    </code></pre>
+
+    <h3>Zakaj je uporaben</h3>
+    <p>
+      Gobuster sem uporabil v fazi raziskovanja spletnega strežnika, saj razkrije
+      poti ali imenike, ki jih razvijalci pogosto pozabijo zaščititi ali odstraniti.
+      Tako lahko odkrijemo na primer <code>/admin</code>, <code>/backup</code> ali
+      <code>/test</code> – to so mesta, kjer se pogosto skrivajo zanimive informacije
+      ali konfiguracijske datoteke.
+    </p>
+
+    <h3>Tipičen rezultat</h3>
+    <pre><code>
+/index.php       (Status: 200)
+/login           (Status: 301)
+/uploads         (Status: 200)
+/admin           (Status: 401)
+    </code></pre>
+
+    <p class="note">
+      ➤ Ti rezultati so ponazoritveni in izvirajo iz testnih okolij;
+      namenjeni so prikazu delovanja orodja, ne pa razkrivanju dejanskih
+      vsebin platforme Hack The Box.
+    </p>
+
+    <a href="tools.html" class="button">⬅ Nazaj na seznam orodij</a>
+  </section>
+
+  <footer>
+    <p>&copy; 2024 Denis Pilipovic | HTB Project | Gobuster</p>
+  </footer>
+  <script src="../style/hacker.js"></script>
+</body>
+</html>

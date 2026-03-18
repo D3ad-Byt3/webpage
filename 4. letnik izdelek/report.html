@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attack Report | THM‑Project</title>
+  <link rel="stylesheet" href="style/style.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">⚡ THM‑Project</div>
+    <nav>
+      <a href="index.html">Domov</a>
+      <a href="phases/reconnaissance.html">Faze&nbsp;napada</a>
+      <a href="tools/tools.html">Orodja</a>
+      <a href="report.html" class="active">Attack&nbsp;Report</a>
+      <a href="about.html">O&nbsp;avtorju</a>
+    </nav>
+  </header>
+
+  <section class="intro">
+    <button onclick="window.print()" class="button print-btn" style="float: right; margin-top: 5px; font-size: 0.9em; padding: 10px 15px;">🖨️ Prenesi v PDF</button>
+    <h1>Uradno varnostno poročilo (Attack Report)</h1>
+    <p style="clear: both;">
+      Ta dokument predstavlja povzetek ugotovitev penetracijskega testa na tarči <strong>LazyAdmin</strong>.
+      Namenjen je vodstvu in tehnični ekipi podjetja za razumevanje poslovnega tveganja in odpravo ranljivosti.
+    </p>
+
+    <h2>1. Povzetek za vodstvo (Executive Summary)</h2>
+    <p>
+      Med izvajanjem varnostnega preizkusa smo identificirali <strong>kritične ranljivosti</strong> v spletni aplikaciji in konfiguraciji strežnika, ki so napadalcu omogočile popoln prevzem nadzora nad sistemom. Z izkoriščanjem šibkosti pri preverjanju vnosov in napačno dodeljenimi privilegiji v operacijskem sistemu je bil vzpostavljen neavtoriziran skrbniški dostop.
+    </p>
+    
+    <h2>2. Ocena tveganja (CVSS 3.1 Kalkulator)</h2>
+    <div class="tools-grid">
+      <div class="tool-card" id="cvss-card" style="border-color: #ff3366; box-shadow: 0 0 15px rgba(255, 51, 102, 0.2); width: 100%; transition: all 0.3s ease;">
+        <h3 id="cvss-score-display" style="color: #ff3366; text-shadow: 0 0 10px rgba(255, 51, 102, 0.5); transition: color 0.3s ease;">Kritično tveganje (CVSS: 9.8)</h3>
+        <p>Interaktivni izračun tveganja za odkrito ranljivost (Spremeni nastavitve za live simulacijo izračuna):</p>
+        
+        <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 15px;">
+            <div style="flex: 1; min-width: 150px;">
+                <label style="display: block; font-size: 0.85em; color: var(--accent-blue); margin-bottom: 5px;">Vidik napada (Attack Vector)</label>
+                <select id="cvss-av" onchange="calcCVSS()" style="width: 100%; padding: 8px; background: rgba(0,0,0,0.5); color: var(--text-main); border: 1px solid rgba(51, 255, 153, 0.3); border-radius: 4px; font-family: monospace;">
+                    <option value="0.85" selected>Omrežje (Network)</option>
+                    <option value="0.62">Lokalno omrežje (Adjacent)</option>
+                    <option value="0.55">Lokalno (Local)</option>
+                </select>
+            </div>
+            <div style="flex: 1; min-width: 150px;">
+                <label style="display: block; font-size: 0.85em; color: var(--accent-blue); margin-bottom: 5px;">Potrebne pravice (Privileges)</label>
+                <select id="cvss-pr" onchange="calcCVSS()" style="width: 100%; padding: 8px; background: rgba(0,0,0,0.5); color: var(--text-main); border: 1px solid rgba(51, 255, 153, 0.3); border-radius: 4px; font-family: monospace;">
+                    <option value="0.85" selected>Brez (None)</option>
+                    <option value="0.62">Nizke (Low)</option>
+                    <option value="0.27">Visoke (High)</option>
+                </select>
+            </div>
+            <div style="flex: 1; min-width: 150px;">
+                <label style="display: block; font-size: 0.85em; color: var(--accent-blue); margin-bottom: 5px;">Interakcija uporabnika (UI)</label>
+                <select id="cvss-ui" onchange="calcCVSS()" style="width: 100%; padding: 8px; background: rgba(0,0,0,0.5); color: var(--text-main); border: 1px solid rgba(51, 255, 153, 0.3); border-radius: 4px; font-family: monospace;">
+                    <option value="0.85" selected>Ni potrebna (None)</option>
+                    <option value="0.62">Potrebna (Required)</option>
+                </select>
+            </div>
+        </div>
+
+        <script>
+            function calcCVSS() {
+                const av = parseFloat(document.getElementById('cvss-av').value);
+                const pr = parseFloat(document.getElementById('cvss-pr').value);
+                const ui = parseFloat(document.getElementById('cvss-ui').value);
+                
+                // Poenostavljen izračun CVSS v3 Base Score (Vpliv na sistem predpostavljamo kot zelo visok 6.42)
+                const impact = 6.42; 
+                const exploitability = 8.22 * av * 0.77 /* AC: Low */ * pr * ui;
+                
+                let score = Math.min((impact + exploitability), 10.0);
+                score = (Math.ceil(score * 10) / 10).toFixed(1);
+                
+                const display = document.getElementById('cvss-score-display');
+                const card = document.getElementById('cvss-card');
+                
+                let severity = "Kritično"; let color = "#ff3366";
+                if(score < 4.0) { severity = "Nizko"; color = "#27c93f"; }
+                else if(score < 7.0) { severity = "Srednje"; color = "#ffbd2e"; }
+                else if(score < 9.0) { severity = "Visoko"; color = "#ff9900"; }
+                
+                display.innerText = severity + " tveganje (CVSS: " + score + ")";
+                display.style.color = color;
+                display.style.textShadow = "0 0 10px " + color + "80";
+                card.style.borderColor = color;
+                card.style.boxShadow = "0 0 15px " + color + "33";
+            }
+        </script>
+      </div>
+    </div>
+
+    <h2>3. Ključne ugotovitve in MITRE ATT&CK preslikava</h2>
+    <p>Spodaj je preslikava odkritih ranljivosti na industrijski standard MITRE ATT&CK, ki opisuje globalne taktike in tehnike napadalcev:</p>
+    <ul>
+      <li><strong>T1595.002 (Active Scanning):</strong> Skeniranje omrežja in iskanje odprtih portov ter skritih direktorijev z orodji podjetja (uporaba <em>Nmap</em> in <em>Gobuster</em>).</li>
+      <li><strong>T1505.003 (Web Shell):</strong> Zloraba zastarele različice SweetRice CMS sistema za prenos zlonamerne datoteke - Arbitrary File Upload (<em>shell.php5</em>).</li>
+      <li><strong>T1059.004 (Unix Shell):</strong> Pridobitev povratne povezave (Reverse Shell) in dostopa do strežnika s pomočjo ukaza Netcat znotraj ranljive skripte.</li>
+      <li><strong>T1548.003 (Sudo and Sudo Caching):</strong> Napačne <code>sudo</code> pravice, ki ob izvajanju Perl skripte (<code>backup.pl</code>) prožijo sistemsko zapisljivo datoteko <code>/etc/copy.sh</code>, in s tem omogočijo dvig pravic na najvišjo raven (root).</li>
+    </ul>
+
+    <h2>4. Priporočila za odpravo (Remediation)</h2>
+    <p>
+      Izvedba naslednjih korakov je ključna za zagotavljanje varnosti infrastrukture pred zunanjimi in notranjimi grožnjami:
+    </p>
+    <pre><code>
+# 1. Posodobitev sistemov in aplikacij na zadnje različice
+apt-get update && apt-get upgrade -y
+
+# 2. Namestitev in konfiguracija požarnega zidu (UFW)
+ufw allow OpenSSH
+ufw enable
+
+# 3. Pregled sudo konfiguracije in brisanje nepotrebnih pravic
+# Urejanje /etc/sudoers (visudo) z upoštevanjem načela najmanjšega privilegija
+    </code></pre>
+
+    <div class="note">
+      <p>Varnost je kontinuiran proces. Priporočamo redno izvajanje varnostnih pregledov in usposabljanje zaposlenih o pomembnosti izbire močnih gesel.</p>
+    </div>
+
+    <div class="nav-buttons">
+      <a href="index.html" class="button">🏠 Domov</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2024 Denis Pilipovic | THM Project | Attack Report</p>
+  </footer>
+  <script src="style/hacker.js"></script>
+</body>
+</html>
