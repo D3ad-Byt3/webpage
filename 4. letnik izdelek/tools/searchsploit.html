@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SearchSploit | THM‑Project</title>
+  <link rel="stylesheet" href="../style/style.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">⚡ THM‑Project</div>
+    <nav>
+      <a href="../index.html">Domov</a>
+      <a href="../phases/reconnaissance.html">Faze&nbsp;napada</a>
+      <a href="tools.html" class="active">Orodja</a>
+      <a href="../report.html">Attack&nbsp;Report</a>
+      <a href="../about.html">O&nbsp;avtorju</a>
+    </nav>
+  </header>
+
+  <section class="intro">
+    <h2>SearchSploit – Lokalni iskalnik ranljivosti</h2>
+    <p>
+      <strong>SearchSploit</strong> je terminalsko orodje (CLI iskalnik), ki omogoča bliskovito preiskovanje celotne podatkovne baze <em>Exploit Database</em> neposredno preko ukazne vrstice in to brez internetne povezave.
+    </p>
+
+    <h3>Glavne funkcije</h3>
+    <ul>
+      <li>Omogoča offline iskanje ranljivosti, saj ohranja lokalno shranjeno txt bazo.</li>
+      <li>Prikaže natančno pot (.py, .txt, .rb) do zlonamerne kode (exploita) ali opisa napake (Proof of Concept).</li>
+      <li>Možnost preprostega kopiranja izbrane kode v trenutno delovno mapo.</li>
+    </ul>
+
+    <h3>Primer ukaza iz napada</h3>
+    <pre><code>
+# Preverjanje ranljivosti za aplikacijo SweetRice
+searchsploit sweetrice
+    </code></pre>
+
+    <h3>Zakaj je uporaben</h3>
+    <p>
+      Med penetracijskim testiranjem in pregledovanjem cilja smo odkrili, da tarča poganja programsko opremo "SweetRice CMS". S pomočjo orodja SearchSploit smo hitro preverili, in našli javno znano napako v sistemu, ki napadalcu omogoča nalaganje tujih skript – kar smo nato s pridom izkoristili.
+    </p>
+
+    <a href="tools.html" class="button">⬅ Nazaj na seznam orodij</a>
+  </section>
+
+  <footer>
+    <p>&copy; 2024 Denis Pilipovic | THM Project | SearchSploit</p>
+  </footer>
+  <script src="../style/hacker.js"></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>O avtorju | THM Project</title>
+  <link rel="stylesheet" href="style/style.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">⚡ THM‑Project</div>
+    <nav>
+      <a href="index.html">Domov</a>
+      <a href="phases/reconnaissance.html">Faze&nbsp;napada</a>
+      <a href="tools/tools.html">Orodja</a>
+      <a href="report.html">Attack&nbsp;Report</a>
+      <a href="about.html" class="active">O&nbsp;avtorju</a>
+    </nav>
+  </header>
+
+  <section class="intro">
+    <h1>O avtorju in projektu</h1>
+    <p>
+      Moje ime je Denis Pilipovic in ta projekt predstavlja izdelek moje 4. predmetne mature. Združuje moje veliko zanimanje za proaktivno kibernetsko varnost ter željo po razumevanju mehanizmov, s katerimi se v sistemih iščejo ranljivosti.
+    </p>
+
+    <div class="alert-box alert-info">
+      <h4>💡 Zakaj ravno TryHackMe LazyAdmin?</h4>
+      <p>
+        Za praktični del naloge sem si izbral navidezno okolje LazyAdmin, saj idealno ponazarja presek najpogostejših napak v realnem svetu: 
+        neustrezno skrbništvo nad platformami (zastarel SweetRice CMS), slabo upravljanje z varnostnimi kopijami (MySQL geslo na javnem mestu) 
+        in pomanjkljiv nadzor nad ravnjo sistemskih pravic (napačne <code>sudo</code> konfiguracije). To okolje mi je omogočilo, da skozi praktično usmerjen napad pokažem celotno verigo dogodkov (Kill Chain).
+      </p>
+    </div>
+
+    <h2>Kaj sem se naučil / Metodologija</h2>
+    <p>Pri izdelavi projekta sem uporabil kombinacijo sledečih znanj in tehnologij:</p>
+    <ul>
+      <li><strong>Tehnično testiranje (Penetration Testing):</strong> Zbiranje podatkov (Nmap, Gobuster), analiza spletnih hroščev (File Upload) in sistemski dvig privilegijev v UNIX okoljih.</li>
+      <li><strong>Razumevanje delovanja zlonamerne kode:</strong> Razumevanje razlike med <em>Bind</em> in <em>Reverse Shell</em> povezavami ter ugrabitev izvajanja preko zapisljivih binarnih datotek.</li>
+      <li><strong>Grafični dizajn in UI/UX:</strong> Izdelava interaktivne spletne predstavitve po meri z uporabo HTML, CSS3 Glassmorphism in JavaScript animacij, ki napad prikaže tistim brez globokega tehničnega znanja.</li>
+    </ul>
+
+    <div class="screenshot-box">
+      <h3>Zaključna misel</h3>
+      <p>
+        Informacijska varnost ni stanje, ampak stalen proces učenja in prilagajanja. Razumevanje ofenzivnih strategij je namreč prvi in najpomembnejši korak k ustvarjanju močnejše, defenzivne obrambe. Ta izdelek je sad mojega strokovnega raziskovanja, združen z veščinami modernega spletnega razvoja.
+      </p>
+    </div>
+
+    <div class="thm-profile" style="text-align: center; margin: 50px 0;">
+      <h3 style="color: var(--accent-green); margin-bottom: 20px;">Moj TryHackMe Profil</h3>
+      <a href="https://tryhackme.com/p/D3adByt3" target="_blank">
+        <img src="https://tryhackme-badges.s3.amazonaws.com/D3adByt3.png" alt="TryHackMe Badge - D3adByt3" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 15px rgba(51, 255, 153, 0.4); border: 1px solid var(--accent-green); transition: transform 0.3s ease;">
+      </a>
+      <p style="margin-top: 10px; font-size: 0.9em; color: var(--text-muted);">Klikni za ogled mojega uradnega profila in napredka pri reševanju sob.</p>
+    </div>
+
+  </section>
+
+  <footer>
+    <p>&copy; 2024 Denis Pilipovic | THM Project | Maturitetni izdelek</p>
+  </footer>
+  <script src="style/hacker.js"></script>
+</body>
+</html>

