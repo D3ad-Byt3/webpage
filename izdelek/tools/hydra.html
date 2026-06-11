@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hydra | Varnostna analiza omrežja in varnostni načrt</title>
+  <link rel="stylesheet" href="../style/style.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">Varnostna analiza omrežja in varnostni načrt</div>
+    <nav>
+      <a href="../index.html">Domov</a>
+      <a href="../phases/reconnaissance.html">Faze&nbsp;napada</a>
+      <a href="tools.html" class="active">Orodja</a>
+      <a href="../report.html">Attack&nbsp;Report</a>
+      <a href="../about.html">O&nbsp;avtorju</a>
+    </nav>
+  </header>
+
+  <section class="intro">
+    <h2>Hydra – preverjanje avtentikacije</h2>
+    <p>
+      <strong>Hydra</strong> (znana tudi kot <em>THC Hydra</em>)
+      je odprtokodno orodje za testiranje moči gesel in preverjanje avtentikacijskih mehanizmov.
+      Uporablja se za hitro preizkušanje različnih kombinacij uporabniških imen in gesel
+      na različnih storitvah, kot so SSH, FTP, HTTP, SMTP in druge.
+    </p>
+
+    <h3>Glavne funkcije</h3>
+    <ul>
+      <li>Podpira več kot 50 različnih protokolov (SSH, FTP, HTTP, MySQL …)</li>
+      <li>Uporablja napad *brute‑force* ali *dictionary*</li>
+      <li>Možnost določitve hitrosti, števila niti in ponovnih poskusov</li>
+      <li>Integracija z drugimi orodji (npr. Burp Suite ali Metasploit)</li>
+    </ul>
+
+    <h3>Primer ukazov</h3>
+    <pre><code>
+# preverjanje SSH prijave
+hydra -l uporabnik -P /usr/share/wordlists/rockyou.txt ssh://10.10.10.10
+
+# HTTP‑login čez spletni obrazec
+hydra -L users.txt -P passwords.txt 10.10.10.10 http-post-form "/login.php:user=^USER^&pass=^PASS^:F=Invalid"
+    </code></pre>
+
+    <h3>Zakaj je uporaben</h3>
+    <p>
+      Hydra omogoča preverjanje, ali sistem uporablja dovolj močna gesla
+      in ali so mehanizmi za prijavo ustrezno zaščiteni.  
+      V mojem projektu sem ga vključil za teoretični prikaz,
+      kako enostavno ugibljiva gesla predstavljajo tveganje.
+    </p>
+
+    <h3>Tipični rezultat</h3>
+    <pre><code>
+[22][ssh] host: 10.10.10.10   login: testuser   password: password123
+    </code></pre>
+
+    <p class="note">
+      ➤ Rezultati so ponazoritveni in prikazujejo način delovanja orodja,
+      ne pa dejanskih podatkov s Hack The Box sobe.
+    </p>
+
+    <a href="tools.html" class="button">Nazaj na seznam orodij</a>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Denis Pilipović | Varnostna analiza omrežja in varnostni načrt | Hydra</p>
+  </footer>
+  <script src="../style/hacker.js"></script>
+</body>
+</html>

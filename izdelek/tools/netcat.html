@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Netcat | Varnostna analiza omrežja in varnostni načrt</title>
+  <link rel="stylesheet" href="../style/style.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">Varnostna analiza omrežja in varnostni načrt</div>
+    <nav>
+      <a href="../index.html">Domov</a>
+      <a href="../phases/reconnaissance.html">Faze&nbsp;napada</a>
+      <a href="tools.html" class="active">Orodja</a>
+      <a href="../report.html">Attack&nbsp;Report</a>
+      <a href="../about.html">O&nbsp;avtorju</a>
+    </nav>
+  </header>
+
+  <section class="intro">
+    <h2>Netcat – Mrežni švicarski nož</h2>
+    <p>
+      <strong>Netcat</strong> (ali na kratko <code>nc</code>) je eno izmed najbolj poznanih in preprostih omrežnih orodij za preverjanje, branje in pisanje po TCP ter UDP protokolih.
+    </p>
+
+    <h3>Glavne funkcije</h3>
+    <ul>
+      <li>Hitra vzpostavitev enostavnih TCP in UDP povezav za diagnostiko (port scanning).</li>
+      <li>Omogoča prenos podatkov med računalniki in strežniki.</li>
+      <li>Njegova najbolj znana funkcionalnost pri vdoru je "Listener", na katerega napadalec sprejme povratno lupino (Reverse Shell).</li>
+    </ul>
+
+    <h3>Primer ukaza iz napada</h3>
+    <pre><code>
+# Odobritev vhodne povratne povezave na mrežnih vratih 1234
+nc -lvnp 1234
+    </code></pre>
+
+    <h3>Zakaj je uporaben</h3>
+    <p>
+      Ko tarča zaradi zlonamerne skripte proži klic navzven preko mreže, naša napadalna naprava z orodjem Netcat mirno čaka kot "poslušalec". Ko se sistem LazyAdmin poveže nazaj k nam, Netcat to povezavo preusmeri in omogoči, da na tarči izvajamo ukaze z njihove terminalske lupine neposredno preko našega računalnika.
+    </p>
+
+    <a href="tools.html" class="button">Nazaj na seznam orodij</a>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Denis Pilipović | Varnostna analiza omrežja in varnostni načrt | Netcat</p>
+  </footer>
+  <script src="../style/hacker.js"></script>
+</body>
+</html>
